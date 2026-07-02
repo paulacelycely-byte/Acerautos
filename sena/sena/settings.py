@@ -10,7 +10,13 @@ load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(1x7w0^_8zvx$7z$@4z!j+31!r0@=13vs0@qby2-ac8xuj#c=u')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+# ========== ALLOWED_HOSTS (local + Render) ==========
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     'django.contrib.auth',
