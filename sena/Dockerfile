@@ -1,5 +1,5 @@
 # ------------------------------------------------------------
-# Dockerfile para una aplicación Django
+# Dockerfile para una aplicación Django (Producción)
 # ------------------------------------------------------------
 # Etapa 1: Imagen Base
 FROM python:3.11-slim
@@ -33,9 +33,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Etapa 6: Copiar el Proyecto
 COPY . .
 
-# Etapa 7: Puerto que expone el contenedor
+# Etapa 7: Recolectar archivos estáticos (opcional, quita esta línea si te da error de build)
+RUN python manage.py collectstatic --noinput
+
+# Etapa 8: Puerto que expone el contenedor (documentativo, Render usa $PORT igualmente)
 EXPOSE 8000
 
-# Etapa 8: Comando por defecto (desarrollo con runserver)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-#q
+# Etapa 9: Comando de producción con Gunicorn
+CMD gunicorn Acerautos.wsgi:application --bind 0.0.0.0:$PORT
