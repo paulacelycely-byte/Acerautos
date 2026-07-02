@@ -1,14 +1,11 @@
 # ------------------------------------------------------------
 # Dockerfile para una aplicación Django (Producción)
 # ------------------------------------------------------------
-# Etapa 1: Imagen Base
 FROM python:3.11-slim
 
-# Etapa 2: Variables de Entorno
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Etapa 3: Instalar Dependencias del Sistema
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     gcc \
@@ -23,21 +20,15 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
-# Etapa 4: Configurar el Directorio de Trabajo
 WORKDIR /app
 
-# Etapa 5: Instalar Dependencias de Python
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Etapa 6: Copiar el Proyecto
 COPY . .
 
-# Etapa 7: Recolectar archivos estáticos (opcional, quita esta línea si te da error de build)
 RUN python manage.py collectstatic --noinput
 
-# Etapa 8: Puerto que expone el contenedor (documentativo, Render usa $PORT igualmente)
 EXPOSE 8000
 
-# Etapa 9: Comando de producción con Gunicorn
-CMD gunicorn Acerautos.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn sena.wsgi:application --bind 0.0.0.0:$PORT
